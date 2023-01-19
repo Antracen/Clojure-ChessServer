@@ -6,4 +6,5 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [ring "1.9.6"]
                  [org.clojars.rutledgepaulv/websocket-layer "0.1.11"]]
+  :min-lein-version "2.0.0"
   :repl-options {:init-ns chess-server.core})
