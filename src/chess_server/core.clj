@@ -36,11 +36,10 @@
 (def ws-endpoints
   {"/ws" (net/websocket-handler {:encoding :edn})})
 
-(def ring-options
-  {:port                 3000
-   :join?                false
-   :async?               true
-   :websockets           ws-endpoints
-   :allow-null-path-info true})
-
-(def server (jetty/run-jetty web-handler ring-options))
+(defn -main [& [port]]
+  (let [port (Integer. (or port (env :port) 5000))]
+    (jetty/run-jetty web-handler {:port                 port
+                                  :join?                false
+                                  :async?               true
+                                  :websockets           ws-endpoints
+                                  :allow-null-path-info true})))
