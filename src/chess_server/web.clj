@@ -21,6 +21,7 @@
 (defmethod wl/handle-subscription :subscribe-to-game [a]
   (let [results (async/chan)
         init-state @state]
+    (println "New connection!")
     (async/go
       (when-not (empty? init-state)
         (async/>! results init-state))
