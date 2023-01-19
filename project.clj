@@ -1,10 +1,11 @@
 (defproject chess-server "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
+  :description "Chess server written for a ClojureScript chess client. Basically no logic."
   :url "http://example.com/FIXME"
-  :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
-            :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [ring "1.9.6"]
-                 [org.clojars.rutledgepaulv/websocket-layer "0.1.11"]]
-  :min-lein-version "2.0.0"
+                 [org.clojars.rutledgepaulv/websocket-layer "0.1.11"]
+                 [environ "1.1.0"]]
+  :plugins [[environ/environ.lein "0.3.1"]]
+  :hooks [environ.leiningen.hooks]
+  :uberjar-name "clojure-chess-server.jar"
   :repl-options {:init-ns chess-server.core})
