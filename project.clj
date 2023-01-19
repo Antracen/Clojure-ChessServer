@@ -10,5 +10,4 @@
   :min-lein-version "2.0.0"
   :uberjar-name "clojure-chess-server.jar"
   :repl-options {:init-ns chess-server.core}
-  :profiles {:production {:env {:production true}}}
-  :main chess-server.core/hello)
+  :profiles {:production {:env {:production true}}})
