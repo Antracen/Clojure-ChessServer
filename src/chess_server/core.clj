@@ -18,15 +18,19 @@
                  :history history}))
 
 (defmethod wl/handle-subscription :subscribe-to-game [a]
-  (let [results (async/chan)]
-    (async/go-loop []
-      (let [p (promise)
-            key (swap! num inc)]
-        (add-watch state (keyword (str "key" key)) (fn [_ _ old new]
-                                          (when-not (= old new) (deliver p :changed))))
-        (deref p)
-        (when (async/>! results @state)
-          (recur))))
+  (let [results (async/chan)
+        init-state @state]
+    (async/go
+      (when-not (empty? init-state)
+        (async/>! results init-state))
+      (loop []
+        (let [p (promise)
+              key (swap! num inc)]
+          (add-watch state (keyword (str "key" key)) (fn [_ _ old new]
+                                                       (when-not (= old new) (deliver p :changed))))
+          (deref p)
+          (when (async/>! results @state)
+            (recur)))))
     results))
 
 (def ws-endpoints
