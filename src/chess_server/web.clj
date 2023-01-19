@@ -1,8 +1,9 @@
-(ns chess-server.web
+(ns chess-server.core
   (:require [clojure.core.async :as async])
   (:require [websocket-layer.network :as net])
   (:require [websocket-layer.core :as wl])
-  (:require [ring.adapter.jetty9 :as jetty]))
+  (:require [ring.adapter.jetty9 :as jetty])
+  (:require [environ.core :refer [env]]))
 
 (def state (atom {}))
 (def num (atom 1))
