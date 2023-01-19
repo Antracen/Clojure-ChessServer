@@ -1,0 +1,5 @@
+{
+  "name": "Clojure Chess Server",
+  "description": "A barebones Clojure chess server",
+  "image": "heroku/clojure",
+}
