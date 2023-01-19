@@ -7,5 +7,6 @@
                  [environ "1.1.0"]]
   :plugins [[environ/environ.lein "0.3.1"]]
   :hooks [environ.leiningen.hooks]
+  :min-lein-version "2.0.0"
   :uberjar-name "clojure-chess-server.jar"
   :repl-options {:init-ns chess-server.core})
