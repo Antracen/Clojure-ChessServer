@@ -1,4 +1,4 @@
-(ns chess-server.core
+(ns chess-server.web
   (:require [clojure.core.async :as async])
   (:require [websocket-layer.network :as net])
   (:require [websocket-layer.core :as wl])
