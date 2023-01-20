@@ -1,12 +1,12 @@
-(ns chess-server.web
+(ns chess-server.server
   (:require [clojure.core.async :as async])
   (:require [websocket-layer.network :as net])
   (:require [websocket-layer.core :as wl])
   (:require [ring.adapter.jetty9 :as jetty])
-  (:require [environ.core :refer [env]]))
+  (:gen-class))
 
 (def state (atom {}))
-(def num (atom 1))
+(def numbah (atom 1))
 
 (defn web-handler
   [_]
@@ -27,7 +27,7 @@
         (async/>! results init-state))
       (loop []
         (let [p (promise)
-              key (swap! num inc)]
+              key (swap! numbah inc)]
           (add-watch state (keyword (str "key" key)) (fn [_ _ old new]
                                                        (when-not (= old new) (deliver p :changed))))
           (deref p)
@@ -38,10 +38,9 @@
 (def ws-endpoints
   {"/ws" (net/websocket-handler {:encoding :edn})})
 
-(defn -main [& [port]]
-  (let [port (Integer. (or port (env :port) 5000))]
-    (jetty/run-jetty web-handler {:port                 port
-                                  :join?                false
-                                  :async?               true
-                                  :websockets           ws-endpoints
-                                  :allow-null-path-info true})))
+(defn -main []
+  (jetty/run-jetty web-handler {:port                5000
+                               :join?                false
+                               :async?               true
+                               :websockets           ws-endpoints
+                               :allow-null-path-info true}))
