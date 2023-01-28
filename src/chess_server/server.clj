@@ -6,7 +6,7 @@
   (:gen-class))
 
 (def state (atom {}))
-(def numbah (atom 1))
+(def listeners (atom #{}))
 
 (defn web-handler
   [_]
@@ -18,21 +18,26 @@
   (reset! state {:board board
                  :history history}))
 
-(defmethod wl/handle-subscription :subscribe-to-game [a]
+(defn notify-listeners
+  [state]
+  (let [closed-clients (atom (list))]
+    (doseq [listener (seq @listeners)]
+      (when-not (async/put! listener state)
+        (swap! closed-clients conj listener)))
+    (doseq [closed-client @closed-clients]
+      (swap! listeners disj closed-client))))
+
+(add-watch state :notify-listeners (fn [_ _ old new]
+                                     (when-not (= old new) (notify-listeners new))))
+
+(defmethod wl/handle-subscription :subscribe-to-game
+  [_]
+  (println "New subscription!")
   (let [results (async/chan)
-        init-state @state]
-    (println "New connection!")
-    (async/go
-      (when-not (empty? init-state)
-        (async/>! results init-state))
-      (loop []
-        (let [p (promise)
-              key (swap! numbah inc)]
-          (add-watch state (keyword (str "key" key)) (fn [_ _ old new]
-                                                       (when-not (= old new) (deliver p :changed))))
-          (deref p)
-          (when (async/>! results @state)
-            (recur)))))
+        initial-state @state]
+    (swap! listeners conj results)
+    (when-not (empty? initial-state)
+      (async/put! results initial-state))
     results))
 
 (def ws-endpoints
