@@ -43,8 +43,9 @@
 (def ws-endpoints
   {"/ws" (net/websocket-handler {:encoding :edn})})
 
-(defn -main []
-  (jetty/run-jetty web-handler {:port                5000
+(defn -main 
+  [& args]
+  (jetty/run-jetty web-handler {:port                (Integer/parseInt (first args))
                                :join?                false
                                :async?               true
                                :websockets           ws-endpoints

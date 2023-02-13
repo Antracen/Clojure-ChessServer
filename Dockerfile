@@ -33,7 +33,8 @@ RUN jlink --verbose \
 
 # CREATE EXECUTABLE CONTAINER
 FROM alpine:latest
+ARG PORT
 WORKDIR /deployment
 COPY --from=jre-build /app/jre jre
 COPY --from=jre-build /app/build/app.jar app.jar
-ENTRYPOINT jre/bin/java -jar app.jar
+CMD jre/bin/java -jar app.jar $PORT
