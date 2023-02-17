@@ -34,7 +34,7 @@
 
 (defmethod wl/handle-subscription :subscribe-to-game
   [{:keys [board]}]
-  (println "New subscription!")
+  (println "New subscription!!")
   (let [results (async/chan)
         initial-state @state]
     (swap! listeners conj results)
