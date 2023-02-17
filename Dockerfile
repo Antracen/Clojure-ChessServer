@@ -7,7 +7,7 @@ COPY project.clj /usr/src/app/
 RUN lein deps
 COPY . /usr/src/app
 RUN lein uberjar
-COPY target/clojure-chess-server.jar app-standalone.jar
+RUN cp target/clojure-chess-server.jar app-standalone.jar
 
 # CREATE SMALL JRE
 FROM openjdk:17-alpine AS jre-build

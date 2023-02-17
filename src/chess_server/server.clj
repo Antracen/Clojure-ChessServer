@@ -34,7 +34,7 @@
 
 (defmethod wl/handle-subscription :subscribe-to-game
   [{:keys [board]}]
-  (println "New subscription!!")
+  (println "New subscription!")
   (let [results (async/chan)
         initial-state @state]
     (swap! listeners conj results)
@@ -48,6 +48,7 @@
 
 (defn -main 
   [& args]
+  (println "Starting server")
   (jetty/run-jetty web-handler {:port                (Integer/parseInt (first args))
                                :join?                false
                                :async?               true
