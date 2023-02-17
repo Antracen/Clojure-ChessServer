@@ -5,7 +5,7 @@
   (:require [ring.adapter.jetty9 :as jetty])
   (:gen-class))
 
-(def state (atom {}))
+(def state (atom (list)))
 (def listeners (atom #{}))
 
 (defn web-handler
@@ -14,9 +14,11 @@
    :headers {"Content-Type" "text/html"}
    :body    "<html><head></head><body></body></html>"})
 
-(defmethod wl/handle-push :client-state [{:keys [board history]}]
-  (reset! state {:board board
-                 :history history}))
+(defmethod wl/handle-push :client-state [{:keys [board]}]
+  (swap! state conj board))
+
+(defmethod wl/handle-push :undo-move [_]
+  (swap! state pop))
 
 (defn notify-listeners
   [state]
@@ -28,16 +30,17 @@
       (swap! listeners disj closed-client))))
 
 (add-watch state :notify-listeners (fn [_ _ old new]
-                                     (when-not (= old new) (notify-listeners new))))
+                                     (when-not (= old new) (notify-listeners (first new)))))
 
 (defmethod wl/handle-subscription :subscribe-to-game
-  [_]
+  [{:keys [board]}]
   (println "New subscription!")
   (let [results (async/chan)
         initial-state @state]
     (swap! listeners conj results)
-    (when-not (empty? initial-state)
-      (async/put! results initial-state))
+    (if-not (empty? initial-state)
+      (async/put! results (first initial-state))
+      (swap! state conj board))
     results))
 
 (def ws-endpoints
